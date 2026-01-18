@@ -241,8 +241,8 @@ def main() -> None:
         best_next_id: int = argmax(probs)
         best_next_tok: str | None = vocab.get_id_token(best_next_id)
         LOG.info(
-            f"After training, most likely next token after {previous_token!r}|{current_token!r} ",
-            f"is {best_next_tok!r} (ID: {best_next_id}).",
+            f"After training, most likely next token after {previous_token!r}|{current_token!r} "
+            f"is {best_next_tok!r} (ID: {best_next_id})."
         )
 
 
