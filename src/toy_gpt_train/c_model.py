@@ -25,6 +25,8 @@ from typing import Final
 
 from datafun_toolkit.logger import get_logger, log_header
 
+__all__ = ["SimpleNextTokenModel"]
+
 LOG: logging.Logger = get_logger("MODEL", level="INFO")
 
 

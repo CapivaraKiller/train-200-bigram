@@ -21,12 +21,11 @@ Notes:
 - This is intentionally simple: no deep learning framework, no Transformer.
 - The model is a softmax regression classifier over bigram contexts.
 - Training updates the weight rows corresponding to the observed bigram context.
-- token_embeddings.csv is a visualization-friendly projection derived from weights;
-  embeddings are not yet a learned standalone table.
+- token_embeddings.csv is a visualization-friendly projection for levels 100-400;
+  in later repos (500+), embeddings become a first-class learned table.
 """
 
 import logging
-import math
 from pathlib import Path
 from typing import Final
 
@@ -40,16 +39,20 @@ from toy_gpt_train.io_artifacts import (
     write_artifacts,
     write_training_log,
 )
+from toy_gpt_train.math_training import argmax, cross_entropy_loss
 
-LOG: logging.Logger = get_logger("P01", level="INFO")
-
-BASE_DIR: Final[Path] = Path(__file__).resolve().parents[2]
-OUTPUTS_DIR: Final[Path] = BASE_DIR / "outputs"
-TRAIN_LOG_PATH: Final[Path] = OUTPUTS_DIR / "train_log.csv"
-
+__all__ = [
+    "make_training_pairs",
+    "row_labeler_bigram",
+    "token_row_index_bigram",
+    "train_model",
+]
 
 type BigramContext = tuple[int, int]
 type BigramPair = tuple[BigramContext, int]
+
+
+LOG: logging.Logger = get_logger("P01", level="INFO")
 
 
 def token_row_index_bigram(token_id: int, vocab_size: int) -> int:
@@ -83,32 +86,31 @@ def make_training_pairs(token_ids: list[int]) -> list[BigramPair]:
     return pairs
 
 
-def argmax(values: list[float]) -> int:
-    """Return index of maximum value."""
-    best_idx = 0
-    best_val = values[0]
-    for i in range(1, len(values)):
-        if values[i] > best_val:
-            best_val = values[i]
-            best_idx = i
-    return best_idx
-
-
-def cross_entropy_loss(probs: list[float], target_id: int) -> float:
-    """Compute -log(p[target]) with numerical safety."""
-    p = probs[target_id]
-    # Guard against log(0)
-    p = max(p, 1e-12)
-    return -math.log(p)
-
-
 def train_model(
     model: SimpleNextTokenModel,
     pairs: list[BigramPair],
     learning_rate: float,
     epochs: int,
 ) -> list[dict[str, float]]:
-    """Train the bigram model using gradient descent on softmax cross-entropy."""
+    """Train the model using gradient descent on softmax cross-entropy.
+
+    Training proceeds in epochs (full passes through all training pairs).
+    For each pair, we:
+    1. Compute the model's predicted probabilities (forward pass).
+    2. Measure how wrong the prediction was (loss).
+    3. Adjust weights to reduce the loss (gradient descent).
+
+    Args:
+        model: The model to train (weights will be modified in place).
+        pairs: List of (input_id, target_id) training pairs.
+        learning_rate: Step size for gradient descent. Larger values learn
+            faster but may overshoot; smaller values are more stable but slower.
+        epochs: Number of complete passes through the training data.
+
+    Returns:
+        List of per-epoch metrics dictionaries containing epoch number,
+        average loss, and accuracy.
+    """
     history: list[dict[str, float]] = []
 
     for epoch in range(1, epochs + 1):
@@ -116,12 +118,27 @@ def train_model(
         correct: int = 0
 
         for (previous_id, current_id), target_id in pairs:
+            # Forward pass: get probability distribution over next tokens.
             probs: list[float] = model.forward(previous_id, current_id)
+
+            # Compute loss: how surprised is the model by the correct answer?
             total_loss += cross_entropy_loss(probs, target_id)
 
-            if argmax(probs) == target_id:
+            # Check if the model's top prediction matches the correct answer.
+            pred_id: int = argmax(probs)
+            if pred_id == target_id:
                 correct += 1
 
+            # Backward pass: compute gradients and update weights.
+            #
+            # For softmax cross-entropy, the gradient has an elegant form:
+            #   gradient[j] = predicted_prob[j] - true_prob[j]
+            #
+            # Since true_prob is one-hot (1.0 for target, 0.0 elsewhere):
+            #   - For the target token: gradient = prob - 1.0 (negative, so weight increases)
+            #   - For other tokens: gradient = prob - 0.0 (positive, so weight decreases)
+            #
+            # This pushes probability mass toward the correct token.
             row_idx: int = previous_id * model.vocab_size + current_id
             row: list[float] = model.weights[row_idx]
             for j in range(model.vocab_size):
@@ -129,11 +146,16 @@ def train_model(
                 grad: float = probs[j] - y
                 row[j] -= learning_rate * grad
 
+        # Compute epoch-level metrics.
         avg_loss: float = total_loss / len(pairs) if pairs else float("nan")
         accuracy: float = correct / len(pairs) if pairs else 0.0
-        history.append(
-            {"epoch": float(epoch), "avg_loss": avg_loss, "accuracy": accuracy}
-        )
+
+        metrics: dict[str, float] = {
+            "epoch": float(epoch),
+            "avg_loss": avg_loss,
+            "accuracy": accuracy,
+        }
+        history.append(metrics)
 
         LOG.info(
             f"Epoch {epoch}/{epochs} | avg_loss={avg_loss:.6f} | accuracy={accuracy:.3f}"
@@ -148,6 +170,10 @@ def main() -> None:
     from toy_gpt_train.b_vocab import Vocabulary
 
     log_header(LOG, "Training Demo: Next-Token Softmax Regression")
+
+    base_dir: Final[Path] = Path(__file__).resolve().parents[2]
+    outputs_dir: Final[Path] = base_dir / "outputs"
+    train_log_path: Final[Path] = outputs_dir / "train_log.csv"
 
     # Step 0: Identify the corpus file (single file rule).
     corpus_path: Path = find_single_corpus_file(CORPUS_DIR)
@@ -191,11 +217,11 @@ def main() -> None:
     )
 
     # Step 7: Save training metrics for analysis.
-    write_training_log(TRAIN_LOG_PATH, history)
+    write_training_log(train_log_path, history)
 
     # Step 7b: Write inspectable artifacts for downstream use.
     write_artifacts(
-        base_dir=BASE_DIR,
+        base_dir=base_dir,
         corpus_path=corpus_path,
         vocab=vocab,
         model=model,
@@ -206,16 +232,17 @@ def main() -> None:
     )
 
     # Step 8: Qualitative check - what does the model predict after first token?
-    previous_token = tokens[0]
-    current_token = tokens[1]
-    previous_id = vocab.get_token_id(previous_token)
-    current_id = vocab.get_token_id(current_token)
+    previous_token: str = tokens[0]
+    current_token: str = tokens[1]
+    previous_id: int | None = vocab.get_token_id(previous_token)
+    current_id: int | None = vocab.get_token_id(current_token)
     if previous_id is not None and current_id is not None:
-        probs = model.forward(previous_id, current_id)
-        best_next_id = argmax(probs)
-        best_next_tok = vocab.get_id_token(best_next_id)
+        probs: list[float] = model.forward(previous_id, current_id)
+        best_next_id: int = argmax(probs)
+        best_next_tok: str | None = vocab.get_id_token(best_next_id)
         LOG.info(
-            f"After training, most likely next token after {previous_token!r}|{current_token!r} is {best_next_tok!r} (ID: {best_next_id})."
+            f"After training, most likely next token after {previous_token!r}|{current_token!r} ",
+            f"is {best_next_tok!r} (ID: {best_next_id}).",
         )
 
 
