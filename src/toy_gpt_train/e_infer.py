@@ -271,7 +271,7 @@ def main() -> None:
     meta: JsonObject = load_meta(meta_path)
     vocab: ArtifactVocabulary = load_vocabulary_csv(vocab_path)
 
-    v = vocab.vocab_size()
+    v: int = vocab.vocab_size()
     model: SimpleNextTokenModel = SimpleNextTokenModel(vocab_size=v)
     model.weights = load_model_weights_csv(
         weights_path, vocab_size=v, expected_rows=v * v

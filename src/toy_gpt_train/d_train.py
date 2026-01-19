@@ -11,6 +11,7 @@ Responsibilities:
 - Write inspectable training artifacts (vocabulary, weights, embeddings, meta)
 
 Concepts:
+- epoch: one complete pass through all training pairs
 - softmax: converts raw scores into probabilities (so predictions sum to 1)
 - cross-entropy loss: measures how well predicted probabilities match the correct token
 - gradient descent: iterative weight updates to minimize loss
@@ -50,7 +51,6 @@ __all__ = [
 
 type BigramContext = tuple[int, int]
 type BigramPair = tuple[BigramContext, int]
-
 
 LOG: logging.Logger = get_logger("P01", level="INFO")
 
@@ -124,7 +124,7 @@ def train_model(
             # Compute loss: how surprised is the model by the correct answer?
             total_loss += cross_entropy_loss(probs, target_id)
 
-            # Check if the model's top prediction matches the correct answer.
+            # Accuracy: did the top prediction match the target?
             pred_id: int = argmax(probs)
             if pred_id == target_id:
                 correct += 1
