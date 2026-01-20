@@ -41,6 +41,8 @@ jobs:
 
       - name: A1) Checkout repository code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # WHY: mike needs gh-pages history to push
 
       - name: A2) Install uv (with caching)
         uses: astral-sh/setup-uv@v7
